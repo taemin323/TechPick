@@ -1,23 +1,49 @@
-# --- OS ---
-.DS_Store   # Mac 전용 폴더 설정 파일
+# --- OS (Operating System) ---
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+Network Trash Folder
+Temporary Items
+.Spotlight-V100
+.Trashes
 
-# --- IDE ---
-.idea/  # IntelliJ 프로젝트 설정
-*.iml   # IntelliJ 모듈 파일
+# --- IDE (IntelliJ, VS Code) ---
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
 .vscode/
 .classpath
 .project
 .settings/
+.factorypath
 
-# --- BE ---
+# --- Backend (Spring Boot / Gradle) ---
 BE/.gradle/
 BE/build/
 BE/bin/
 BE/out/
+# 로컬 개발 환경 설정 파일 (나중에 생성 시 보안을 위해 미리 추가)
+BE/src/main/resources/application-local.yml
+BE/src/main/resources/application-db.yml
 
-# --- FE ---
+# --- Frontend (React / Node.js) ---
 FE/node_modules/
 FE/build/
 FE/dist/
 FE/.env
+FE/.env.local
+FE/.env.development.local
+FE/.env.test.local
+FE/.env.production.local
 FE/.eslintcache
+FE/npm-debug.log*
+FE/yarn-debug.log*
+FE/yarn-error.log*
+
+# --- Others ---
+*.log
+*.temp
+*.tmp
