@@ -1,0 +1,23 @@
+# --- OS ---
+.DS_Store   # Mac 전용 폴더 설정 파일
+
+# --- IDE ---
+.idea/  # IntelliJ 프로젝트 설정
+*.iml   # IntelliJ 모듈 파일
+.vscode/
+.classpath
+.project
+.settings/
+
+# --- BE ---
+BE/.gradle/
+BE/build/
+BE/bin/
+BE/out/
+
+# --- FE ---
+FE/node_modules/
+FE/build/
+FE/dist/
+FE/.env
+FE/.eslintcache
