@@ -8,15 +8,15 @@ import com.techpick.backend.article.repository.ArticleRepository;
 import com.techpick.backend.common.apiPayload.code.status.ErrorStatus;
 import com.techpick.backend.common.apiPayload.exception.GeneralException;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneOffset;
 import java.util.List;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,6 +37,10 @@ public class ArticleService {
                 .title(request.getTitle())
                 .content(request.getContent())
                 .url(request.getUrl())
+                .pubDate(request.getPubDate())
+                .blogName(request.getBlogName())
+                .thumbnailUrl(request.getThumbnailUrl())
+                .createdAt(LocalDateTime.now(ZoneOffset.UTC))
                 .build();
 
         Article savedArticle = articleRepository.save(article);
@@ -45,6 +49,9 @@ public class ArticleService {
                 .articleId(savedArticle.getArticleId())
                 .title(savedArticle.getTitle())
                 .url(savedArticle.getUrl())
+                .pubDate(savedArticle.getPubDate())
+                .blogName(savedArticle.getBlogName())
+                .thumbnailUrl(savedArticle.getThumbnailUrl())
                 .build();
     }
 
