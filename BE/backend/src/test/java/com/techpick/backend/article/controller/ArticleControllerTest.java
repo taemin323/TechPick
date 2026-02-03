@@ -2,6 +2,7 @@ package com.techpick.backend.article.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techpick.backend.article.dto.request.ArticleRequest;
+import com.techpick.backend.article.dto.response.ArticleListResponse;
 import com.techpick.backend.article.dto.response.ArticleResponse;
 import com.techpick.backend.article.service.ArticleService;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -82,4 +85,43 @@ public class ArticleControllerTest {
                 .andExpect(jsonPath("$.result.articleId").value(articleId));
     }
 
+    @Test
+    @WithMockUser
+    @DisplayName("아티클 목록을 조회하면 페이징된 결과를 응답한다")
+    void getAllArticles() throws Exception {
+        //Given
+        int page = 0;
+        int size = 10;
+
+        ArticleResponse article1 = ArticleResponse.builder()
+                .articleId(1L).title("제목1").url("https://test1.com").build();
+        ArticleResponse article2 = ArticleResponse.builder()
+                .articleId(2L).title("제목2").url("https://test2.com").build();
+
+        ArticleListResponse response = ArticleListResponse.builder()
+                .articles(List.of(article1, article2))
+                .listSize(2)
+                .totalPages(1)
+                .totalElements(2)
+                .isFirst(true)
+                .isLast(true)
+                .build();
+
+        // articleService.getAllArticles 호출 시 mock 응답 설정
+        given(articleService.getAllArticles(page, size)).willReturn(response);
+
+        //When & Then
+        mockMvc.perform(get("/api/articles")
+                .param("page", String.valueOf(page))
+                .param("size", String.valueOf(size)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andExpect(jsonPath("$.result.articles").isArray())
+                .andExpect(jsonPath("$.result.listSize").value(2))
+                .andExpect(jsonPath("$.result.totalPages").value(1))
+                .andExpect(jsonPath("$.result.totalElements").value(2))
+                .andExpect(jsonPath("$.result.first").value(true))
+                .andExpect(jsonPath("$.result.articles[0].title").value("제목1"));
+
+    }
 }

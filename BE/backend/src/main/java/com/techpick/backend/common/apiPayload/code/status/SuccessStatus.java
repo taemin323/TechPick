@@ -18,7 +18,8 @@ public enum SuccessStatus implements BaseCode {
     USER_INFO_SUCCESS(HttpStatus.OK, "USER2001", "사용자 정보 조회 성공입니다."),
 
     // 아티클 관련 응답
-    ARTICLE_DETAIL_SUCCESS(HttpStatus.OK, "ARTICLE2001", "아티클 상세 조회 성공입니다.");
+    ARTICLE_DETAIL_SUCCESS(HttpStatus.OK, "ARTICLE2001", "아티클 상세 조회 성공입니다."),
+    ARTICLE_LIST_SUCCESS(HttpStatus.OK, "ARTICLE2002", "아티클 전체 조회 성공입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
