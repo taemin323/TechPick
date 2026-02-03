@@ -13,4 +13,7 @@ public class ArticleRequest {
     private String title;
     private String content;
     private String url;
+    private String pubDate;
+    private String blogName;
+    private String thumbnailUrl;
 }

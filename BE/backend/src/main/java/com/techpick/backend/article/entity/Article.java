@@ -39,5 +39,6 @@ public class Article {
     @Column(nullable = false)
     private String thumbnailUrl;
 
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 }
