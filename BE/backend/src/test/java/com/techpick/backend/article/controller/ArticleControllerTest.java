@@ -41,7 +41,7 @@ public class ArticleControllerTest {
     @DisplayName("새로운 아티클을 생성하면 성공을 응답한다")
     void createArticle() throws Exception {
         //Given
-        ArticleRequest request = new ArticleRequest("테스트 제목", "테스트 내용", "https://techpick.com");
+        ArticleRequest request = new ArticleRequest("테스트 제목", "테스트 내용", "https://techpick.com", "2026-02-10", "네이버", "https://thumb.com");
         ArticleResponse response = new ArticleResponse(1L, "테스트 제목", "https://techpick.com", "내용", "2026-02-02", "네이버", "https://thumbnail.com");
 
         given(articleService.createArticle(any(ArticleRequest.class))).willReturn(response);
