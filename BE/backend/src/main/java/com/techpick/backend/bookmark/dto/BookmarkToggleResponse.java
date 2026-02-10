@@ -1,4 +1,7 @@
 package com.techpick.backend.bookmark.dto;
 
-public class BookmarkToggleResponse {
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+public record BookmarkToggleResponse(String action, LocalDateTime createdAt) {
 }
