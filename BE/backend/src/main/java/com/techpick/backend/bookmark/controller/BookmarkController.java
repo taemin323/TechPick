@@ -3,6 +3,7 @@ package com.techpick.backend.bookmark.controller;
 import com.techpick.backend.bookmark.dto.BookmarkToggleResponse;
 import com.techpick.backend.bookmark.service.BookmarkService;
 import com.techpick.backend.common.apiPayload.ApiResponse;
+import com.techpick.backend.common.apiPayload.code.status.SuccessStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,9 @@ public class BookmarkController {
             @RequestHeader("X-USER-ID") String userUuid
     ) {
         BookmarkToggleResponse response = bookmarkService.toggleBookmark(userUuid, articleId);
-        return ApiResponse.onSuccess(response);
+
+        if("ADDED".equals(response.action())) return ApiResponse.of(SuccessStatus.BOOKMARK_ADDED_SUCCESS, response);
+
+        return ApiResponse.of(SuccessStatus.BOOKMARK_DELETED_SUCCESS, response);
     }
 }
