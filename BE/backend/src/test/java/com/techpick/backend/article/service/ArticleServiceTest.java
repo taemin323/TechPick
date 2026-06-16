@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +26,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 public class ArticleServiceTest {
 
     @InjectMocks
@@ -38,7 +39,7 @@ public class ArticleServiceTest {
     @DisplayName("아티클 생성 요청을 받으면 DB에 저장하고 응답을 반환한다")
     void createArticle() {
         //Given
-        ArticleRequest request = new ArticleRequest("제목", "내용" , "https://url.com");
+        ArticleRequest request = new ArticleRequest("테스트 제목", "테스트 내용", "https://techpick.com", "2026-02-10", "네이버", "https://thumb.com");
         Article article = Article.builder()
                 .articleId(1L)
                 .title("제목")
