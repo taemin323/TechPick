@@ -2,6 +2,7 @@ package com.techpick.backend.bookmark.service;
 
 import com.techpick.backend.article.entity.Article;
 import com.techpick.backend.article.repository.ArticleRepository;
+import com.techpick.backend.bookmark.dto.BookmarkListResponse;
 import com.techpick.backend.bookmark.dto.BookmarkToggleResponse;
 import com.techpick.backend.bookmark.entity.Bookmark;
 import com.techpick.backend.bookmark.repository.BookmarkRepository;
@@ -13,7 +14,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -54,5 +59,29 @@ public class BookmarkServiceTest {
         //Then
         verify(bookmarkRepository, times(1)).save(any(Bookmark.class));
         assertThat(response.action()).isEqualTo("ADDED");
+    }
+
+    @Test
+    @DisplayName("특정 유저의 UUID와 페이징 정보를 주면 북마크 목록 DTO를 반환한다")
+    void getBookmarkList() {
+        //Given
+        int page = 0;
+        int size = 10;
+        PageRequest pageRequest = PageRequest.of(page, size);
+        String userUuid = "test-uuid";
+
+        User user = User.builder().userId(1L).userUuid(userUuid).build();
+        Page<Bookmark> emptyPage = new PageImpl<>(Collections.emptyList(), pageRequest, 0);
+        given(userRepository.findByUserUuid(userUuid)).willReturn(Optional.of(user));
+        given(bookmarkRepository.findAllByUser(user, pageRequest)).willReturn(emptyPage);
+
+        //When
+        BookmarkListResponse result = bookmarkService.getBookmarkList(page, size, userUuid);
+
+        //Then
+        assertThat(result).isNotNull();
+        assertThat(result.bookmarks()).isEmpty();
+        assertThat(result.totalElements()).isEqualTo(0);
+        verify(bookmarkRepository, times(1)).findAllByUser(user, pageRequest);
     }
 }

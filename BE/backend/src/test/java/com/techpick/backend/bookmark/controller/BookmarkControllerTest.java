@@ -1,6 +1,7 @@
 package com.techpick.backend.bookmark.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.techpick.backend.bookmark.dto.BookmarkListResponse;
 import com.techpick.backend.bookmark.dto.BookmarkToggleResponse;
 import com.techpick.backend.bookmark.service.BookmarkService;
 import org.junit.jupiter.api.DisplayName;
@@ -14,11 +15,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Collections;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -53,5 +55,33 @@ public class BookmarkControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.isSuccess").value(true))
                 .andExpect(jsonPath("$.result.action").value("ADDED"));
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("특정 유저의 북마크 목록을 조회하면 페이징된 결과를 응답한다")
+    void getBookmarkList() throws Exception {
+        //Given
+        String userUuid = "test-uuid";
+        BookmarkListResponse response = BookmarkListResponse.builder()
+                        .bookmarks(Collections.emptyList())
+                                .listSize(0)
+                                        .totalPages(0)
+                                                .totalElements(0L)
+                                                        .isFirst(true)
+                                                                .isLast(true)
+                                                                        .build();
+
+        given(bookmarkService.getBookmarkList(anyInt(), anyInt(), anyString())).willReturn(response);
+
+        //When % Then
+        mockMvc.perform(get("/api/bookmarks")
+                .header("X-USER-ID", userUuid)
+                .param("page", "0")
+                .param("size", "10"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andExpect(jsonPath("$.code").value("BOOKMARK2003"))
+                .andExpect(jsonPath("$.result.bookmarks").isArray());
     }
 }
