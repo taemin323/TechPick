@@ -2,6 +2,8 @@ package com.techpick.backend.bookmark.service;
 
 import com.techpick.backend.article.entity.Article;
 import com.techpick.backend.article.repository.ArticleRepository;
+import com.techpick.backend.bookmark.dto.BookmarkItemResponse;
+import com.techpick.backend.bookmark.dto.BookmarkListResponse;
 import com.techpick.backend.bookmark.dto.BookmarkToggleResponse;
 import com.techpick.backend.bookmark.entity.Bookmark;
 import com.techpick.backend.bookmark.repository.BookmarkRepository;
@@ -11,11 +13,14 @@ import com.techpick.backend.user.entity.User;
 import com.techpick.backend.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -50,5 +55,34 @@ public class BookmarkService {
             bookmarkRepository.save(newBookmark);
             return new BookmarkToggleResponse("ADDED", java.time.LocalDateTime.now(ZoneOffset.UTC));
         }
+    }
+
+    public BookmarkListResponse getBookmarkList(int page, int size, String userUuid) {
+        User user = userRepository.findByUserUuid(userUuid)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Bookmark> bookmarkPage = bookmarkRepository.findAllByUser(user, pageRequest);
+
+        List<BookmarkItemResponse> bookmarks = bookmarkPage.getContent().stream()
+                .map(b -> new BookmarkItemResponse(
+                        b.getBookmarkId(),
+                        b.getArticle().getArticleId(),
+                        b.getArticle().getTitle(),
+                        b.getArticle().getUrl(),
+                        b.getArticle().getThumbnailUrl(),
+                        b.getArticle().getBlogName(),
+                        b.getCreatedAt().toString()
+                ))
+                .toList();
+
+        return BookmarkListResponse.builder()
+                .bookmarks(bookmarks)
+                .listSize(bookmarks.size())
+                .totalPages(bookmarkPage.getTotalPages())
+                .totalElements(bookmarkPage.getTotalElements())
+                .isFirst(bookmarkPage.isFirst())
+                .isLast(bookmarkPage.isLast())
+                .build();
     }
 }

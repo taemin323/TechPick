@@ -23,7 +23,8 @@ public enum SuccessStatus implements BaseCode {
 
     // 북마크 관련 응답
     BOOKMARK_ADDED_SUCCESS(HttpStatus.OK, "BOOKMARK2001", "북마크 추가 성공입니다."),
-    BOOKMARK_DELETED_SUCCESS(HttpStatus.OK, "BOOKMARK2002", "북마크 삭제 성공입니다.");
+    BOOKMARK_DELETED_SUCCESS(HttpStatus.OK, "BOOKMARK2002", "북마크 삭제 성공입니다."),
+    BOOKMARK_LIST_SUCCESS(HttpStatus.OK, "BOOKMARK2003", "북마크 목록 조회 성공입니다.");
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;
