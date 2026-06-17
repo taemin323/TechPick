@@ -58,4 +58,26 @@ public class UserControllerTest {
 
 
     }
+
+    @Test
+    @WithMockUser
+    @DisplayName("UUID 없이 요청하면 서버가 생성한 UUID를 응답한다")
+    void loginWithoutUuid() throws Exception {
+
+        //Given
+        String newUuid = UUID.randomUUID().toString();
+        User user = new User(newUuid);
+        UserRequest request = new UserRequest(null);
+
+        given(userService.findOrCreateUser(null)).willReturn(user);
+
+        //When & Then
+        mockMvc.perform(post("/api/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+                .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andExpect(jsonPath("$.result.userUuid").isNotEmpty());
+    }
 }
