@@ -15,6 +15,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
@@ -43,4 +44,24 @@ public class UserServiceTest {
         verify(userRepository, times(1)).save(any(User.class));
     }
 
+    @Test
+    @DisplayName("UUID 없이 요청하면 서버가 UUID를 생성해서 저장한다")
+    void updateUser() {
+
+        //Given
+        String userUuid = null;
+        User savedUser = User.builder()
+                .userUuid(UUID.randomUUID().toString())
+                .build();
+
+        given(userRepository.save(any(User.class))).willReturn(savedUser);
+
+        //When
+        User result = userService.findOrCreateUser(userUuid);
+
+        //Then
+        verify(userRepository, never()).findByUserUuid(any());
+        verify(userRepository, times(1)).save(any());
+        assertThat(result.getUserUuid()).isNotNull();
+    }
 }
